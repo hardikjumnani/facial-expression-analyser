@@ -15,6 +15,9 @@ You are tasked with building a personalized compliment generator based on facial
 
 
 ## Challenges faced and how they were addressed
+**ModuleNotFoundError: No module named 'moviepy.editor'**
+[reference](https://stackoverflow.com/questions/41923492/cant-import-moviepy-editor)
+Fixed this by installing specific version of moviepy
 
 
 ## Instructions to run the code
