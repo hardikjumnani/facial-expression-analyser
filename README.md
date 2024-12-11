@@ -19,5 +19,12 @@ You are tasked with building a personalized compliment generator based on facial
 [reference](https://stackoverflow.com/questions/41923492/cant-import-moviepy-editor)
 Fixed this by installing specific version of moviepy
 
+**Rapid change of compliment random compliments, even without change of emotion**
+Fixed this by having a record of previous emotion (prev_emotion) and change compliment 
+only when current emotion (curr_emotion) is not same as the previous one.
+
+**Compliment's length was longer than the width of screen**
+Fixed this by splitting the lines of the compliment and putting text one line at a time.
+
 
 ## Instructions to run the code
