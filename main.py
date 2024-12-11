@@ -46,6 +46,7 @@ COMPLIMENTS = {
 
 CAM: cv2.VideoCapture = cv2.VideoCapture(0)
 
+prev_emotion_percent: float = 0.0
 prev_emotion: str = ''
 compliment: str = ''
 while True:
@@ -56,16 +57,18 @@ while True:
     
     metrics: List[Dict[str, _face_coords|_emotion_dict]] = detector.detect_emotions(frame)
     if metrics:
-        mx: float = 0.0
+        curr_emotion_percent: float = 0.0
         curr_emotion: str|None = None
         for emotion, percent in metrics[0]['emotions'].items():
-            if percent > mx:
-                mx = percent
+            if percent > curr_emotion_percent:
+                curr_emotion_percent = percent
                 curr_emotion = emotion
         
-        if curr_emotion != prev_emotion:
+        emotion_changed: bool = curr_emotion != prev_emotion and abs(prev_emotion_percent - curr_emotion_percent) > 0.2
+        if emotion_changed:
             compliment = random.choice(COMPLIMENTS[curr_emotion])
             prev_emotion = curr_emotion
+            prev_emotion_percent = curr_emotion_percent
         
         compliment_lines: List[str] = compliment.split('\n')
         for i, line in enumerate(compliment_lines):

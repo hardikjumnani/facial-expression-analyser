@@ -26,5 +26,11 @@ only when current emotion (curr_emotion) is not same as the previous one.
 **Compliment's length was longer than the width of screen**
 Fixed this by splitting the lines of the compliment and putting text one line at a time.
 
+**Rapid change in compliments**
+This was faced because the model is considering the current frame, without taking previous
+frame into account, which is causing rapid changes in guessed emotions.
+To fix this, I have eased out the switch so that a new compliment is picked, only when 
+there is more than 20% change in the emotion.
+
 
 ## Instructions to run the code
