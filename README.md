@@ -38,16 +38,26 @@ This was faced because the model is considering the current frame, without takin
 
 ## Instructions to run the code
 Clone the Repo (Ensure Python is >=3.10.6)
-`git clone https://github.com/hardikjumnani/facial-expression-analyser`
+```
+git clone https://github.com/hardikjumnani/facial-expression-analyser
+```
 
 Create a virtual environment
-`python -m venv .venv`
+```
+python -m venv .venv
+```
 
 Activate the virtual environment
-`source .venv/Scripts/activate`
+```
+source .venv/Scripts/activate
+```
 
 Install all dependencies
-`pip install -r requirements.txt`
+```
+pip install -r requirements.txt
+```
 
 Run the program
-`py main.py`
+```
+py main.py
+```
