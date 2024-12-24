@@ -1,11 +1,14 @@
-from compliments import COMPLIMENTS
 import cv2
 from fer import FER
+import json
 import random
 from typing import List, Dict, Tuple
 
 _face_coords = List[int]
 _emotion_dict = Dict[str, float]
+
+with open('compliments.json', 'r') as compliments:
+    COMPLIMENTS = json.load(compliments)
 
 def analyse_curr_emotion(emotions_metrics: Dict[str, float]) -> Tuple[str|float]:
     curr_emotion_percent: float = 0.0
