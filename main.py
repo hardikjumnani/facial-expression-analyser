@@ -1,13 +1,19 @@
 import cv2
 from fer import FER
 import json
+import pyttsx3
 import random
+from threading import Thread, Lock
 from typing import List, Dict, Tuple
 
 _face_coords = List[int]
 _emotion_dict = Dict[str, float]
 
-with open('compliments.json', 'r') as compliments:
+ENGINE = pyttsx3.init()
+ENGINE.setProperty('voice', ENGINE.getProperty('voices')[1].id)
+ENGINE.setProperty('rate', 175)
+
+with open('compliments.json', 'r', encoding='utf-8') as compliments:
     COMPLIMENTS = json.load(compliments)
 
 def analyse_curr_emotion(emotions_metrics: Dict[str, float]) -> Tuple[str|float]:
@@ -36,6 +42,11 @@ def show_text(frame: cv2.typing.MatLike, compliment_lines: List[str]) -> cv2.typ
     
     return frame
 
+def stop_and_speak(new_text):
+    ENGINE.say(new_text)
+    try: ENGINE.runAndWait()
+    except RuntimeError: pass
+
 if __name__ == '__main__':
 
     CAM: cv2.VideoCapture = cv2.VideoCapture(0)
@@ -49,8 +60,9 @@ if __name__ == '__main__':
         frame = cv2.flip(frame, 1)
         
         metrics: List[Dict[str, _face_coords|_emotion_dict]] = DETECTOR.detect_emotions(frame)
-        if metrics:
+        face_found = True if metrics else False
 
+        if face_found:
             curr_emotion_percent: float = 0.0
             curr_emotion: str|None = None
             curr_emotion, curr_emotion_percent = analyse_curr_emotion(metrics[0]['emotions'].items())
@@ -58,6 +70,11 @@ if __name__ == '__main__':
             emotion_changed: bool = curr_emotion != prev_emotion and abs(prev_emotion_percent - curr_emotion_percent) > 0.2
             if emotion_changed:
                 compliment = random.choice(COMPLIMENTS[curr_emotion])
+                
+                thread = Thread(target=stop_and_speak, args=(compliment, ))
+                thread.daemon = True
+                thread.start()
+
                 prev_emotion = curr_emotion
                 prev_emotion_percent = curr_emotion_percent
             
