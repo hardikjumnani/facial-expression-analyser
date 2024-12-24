@@ -15,6 +15,7 @@ The program captures your camera feed and the library 'fer' is used to detect em
 **Libraries**
 OpenCV
 FER Library
+pyttsx3
 
 **Tools**
 [ChatGPT](https://chatgpt.com/share/67592122-6a88-8013-b563-d57f5a1af674)
