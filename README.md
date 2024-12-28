@@ -36,6 +36,9 @@ Fixed this by splitting the lines of the compliment and putting text one line at
 **Rapid change in compliments**
 This was faced because the model is considering the current frame, without taking previousframe into account, which is causing rapid changes in guessed emotions. To fix this, I have eased out the switch so that a new compliment is picked, only when there is more than 20% change in the emotion.
 
+**Get dimensions taken by a word on the camera frame**
+A static method named getTextSize exist in cv2 which gives the size that text takes on screen.
+
 
 ## Instructions to run the code
 Clone the Repo (Ensure Python is >=3.10.6)

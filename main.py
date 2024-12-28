@@ -8,13 +8,26 @@ from typing import List, Dict, Tuple
 
 _face_coords = List[int]
 _emotion_dict = Dict[str, float]
+_face_data = Dict[str, _face_coords|_emotion_dict]
+_frame = cv2.typing.MatLike
 
 ENGINE = pyttsx3.init()
 ENGINE.setProperty('voice', ENGINE.getProperty('voices')[1].id)
 ENGINE.setProperty('rate', 175)
 
-with open('compliments.json', 'r', encoding='utf-8') as compliments:
+with open('compliments_formatted.json', 'r', encoding='utf-8') as compliments:
     COMPLIMENTS = json.load(compliments)
+
+def box_face(frame: _frame, face_box: _face_coords) -> _frame:
+    frame = cv2.rectangle(
+        img = frame,
+        pt1 = (face_box[0], face_box[1]),
+        pt2 = (face_box[0] + face_box[2], face_box[1] + face_box[3]),
+        color = (0, 155, 255),
+        thickness = 2
+    )
+
+    return frame
 
 def analyse_curr_emotion(emotions_metrics: Dict[str, float]) -> Tuple[str|float]:
     curr_emotion_percent: float = 0.0
@@ -27,42 +40,81 @@ def analyse_curr_emotion(emotions_metrics: Dict[str, float]) -> Tuple[str|float]
     return curr_emotion, curr_emotion_percent
 
 
-def show_text(frame: cv2.typing.MatLike, compliment_lines: List[str]) -> cv2.typing.MatLike:
-    for i, line in enumerate(compliment_lines):
-        frame = cv2.putText(
-            img = frame,
-            text = line,
-            org = (5, (i+1)*30),
-            fontFace = cv2.FONT_HERSHEY_PLAIN,
-            fontScale = 2,
-            color = (0, 255, 0),
-            thickness = 2,
-            lineType = cv2.LINE_AA
-        )
+def show_text(frame: _frame, face_box: _face_coords, compliment: List[str]) -> _frame:
     
+    x1, y1 = face_box[:2]
+    x3, y3 = x1 + face_box[2], y1 + face_box[3]
+
+    _, line_height = cv2.getTextSize('H', cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
+    LINE_GAP = line_height
+    WORD_GAP = 5
+    MARGIN = 5
+
+    x, y = 40, 60
+    i = 0
+    while True:
+        if i >= len(compliment): break
+        word: str = compliment[i]
+        word_width, word_height = cv2.getTextSize(word, cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
+
+        # edge cases: border of camera
+        if not x + word_width < FRAME_WIDTH:
+            # change line
+            x = 20
+            y += line_height + LINE_GAP
+        if not y < FRAME_HEIGHT:
+            # no more lines possible so exit
+            break
+        
+        # edge cases: face box
+        text_horizontal_box: bool = x + word_width < x1 or x > x3
+        text_vertical_box: bool = y + word_height < y1 or y > y3
+        text_outside_box: bool = text_vertical_box or text_horizontal_box
+        if text_outside_box:
+            frame = cv2.putText(
+                img = frame,
+                text = word,
+                org = (x, y+line_height),
+                fontFace = cv2.FONT_HERSHEY_PLAIN,
+                fontScale = 2,
+                color = (0, 255, 0),
+                thickness = 2,
+                lineType = cv2.LINE_AA
+            )
+            i += 1
+            x += word_width + WORD_GAP
+        else:
+            x = x3 + MARGIN
+
     return frame
 
-def stop_and_speak(new_text):
-    ENGINE.say(new_text)
+def stop_and_speak(new_text: List[str]) -> None:
+    ENGINE.say(''.join(new_text))
     try: ENGINE.runAndWait()
     except RuntimeError: pass
 
 if __name__ == '__main__':
 
     CAM: cv2.VideoCapture = cv2.VideoCapture(0)
+    FRAME_WIDTH: int = int(CAM.get(cv2.CAP_PROP_FRAME_WIDTH))
+    FRAME_HEIGHT: int = int(CAM.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
     DETECTOR: FER = FER()
 
     prev_emotion_percent: float = 0.0
     prev_emotion: str = ''
-    compliment: str = ''
+    compliment: List[str] = ['']
     while True:
         ret, frame = CAM.read()
         frame = cv2.flip(frame, 1)
         
-        metrics: List[Dict[str, _face_coords|_emotion_dict]] = DETECTOR.detect_emotions(frame)
+        metrics: List[_face_data] = DETECTOR.detect_emotions(frame)
         face_found = True if metrics else False
 
         if face_found:
+            face_box = metrics[0]['box']
+            # frame = box_face(frame, face_box)
+
             curr_emotion_percent: float = 0.0
             curr_emotion: str|None = None
             curr_emotion, curr_emotion_percent = analyse_curr_emotion(metrics[0]['emotions'].items())
@@ -78,8 +130,7 @@ if __name__ == '__main__':
                 prev_emotion = curr_emotion
                 prev_emotion_percent = curr_emotion_percent
             
-            compliment_lines: List[str] = compliment.split('\n')
-            frame = show_text(frame, compliment_lines)
+            frame = show_text(frame, face_box, compliment)
 
         else:
             frame = cv2.putText(
