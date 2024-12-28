@@ -48,20 +48,36 @@ git clone https://github.com/hardikjumnani/facial-expression-analyser
 
 Create a virtual environment
 ```
+# Windows
 python -m venv .venv
+
+# MacOS/Linux
+python3 -m venv .venv
 ```
 
 Activate the virtual environment
 ```
+# Windows
 source .venv/Scripts/activate
+
+# MacOS/Linux
+source .venv/bin/activate
 ```
 
 Install all dependencies
 ```
+# Windows
 pip install -r requirements.txt
+
+# MacOS/Linux
+pip3 install -r requirements.txt
 ```
 
 Run the program
 ```
-py main.py
+# Windows
+python main.py
+
+# MacOS/Linux
+python3 main.py
 ```
