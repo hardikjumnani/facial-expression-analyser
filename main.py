@@ -63,14 +63,14 @@ def analyse_curr_emotion(emotions_metrics: Dict[str, float]) -> Tuple[str|float]
     
     return curr_emotion, curr_emotion_percent
 
-def display_text(DISPLAY: TFT.ST7735, compliment: List[str]) -> Image:
+def display_text(DISPLAY: TFT.ST7735, compliment: List[str], text_color: Tuple[int]):
     img = Image.new('RGB', (WIDTH, HEIGHT), color=(0, 0, 0))
     draw = ImageDraw.Draw(img)
     font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 14)
     draw.rectangle((0, 0, 128, 160), (128, 128, 128))
-    draw.text((0, 0), '\n'.join(compliment), font=font, fill=(255, 255, 255))
+    draw.text((0, 0), '\n'.join(compliment), font=font, fill=text_color)
 
-    return img
+    DISPLAY.display(img)
 
 def stop_and_speak(new_text: List[str]) -> None:
     # ENGINE.say(''.join(new_text))
@@ -126,22 +126,13 @@ if __name__ == '__main__':
                 prev_emotion = curr_emotion
                 prev_emotion_percent = curr_emotion_percent
             
-            DISPLAY.display(display_text(DISPLAY, compliment))
+            display_text(DISPLAY, compliment, (0, 255, 0))
 
         else:
-            frame = cv2.putText(
-                img = frame,
-                text = 'No Face Found',
-                org = (5, 30),
-                fontFace = cv2.FONT_HERSHEY_PLAIN,
-                fontScale = 2,
-                color = (0, 0, 255),
-                thickness = 2,
-                lineType = cv2.LINE_AA
-            )
+            display_text(DISPLAY, ['No', 'Face', 'Found'], (0, 0, 255))
 
 
-        cv2.imshow('Facial Expression Analyser', frame)
+        # cv2.imshow('Facial Expression Analyser', frame)
 
         if cv2.waitKey(1) == ord('q'): # Press 'q' to exit the loop
             break
