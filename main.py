@@ -11,9 +11,11 @@ _emotion_dict = Dict[str, float]
 _face_data = Dict[str, _face_coords|_emotion_dict]
 _frame = cv2.typing.MatLike
 
-ENGINE = pyttsx3.init()
-ENGINE.setProperty('voice', ENGINE.getProperty('voices')[1].id)
-ENGINE.setProperty('rate', 175)
+CAMERA_IP = 'http://192.168.6.149:4747/video'
+
+# ENGINE = pyttsx3.init()
+# ENGINE.setProperty('voice', ENGINE.getProperty('voices')[1].id)
+# ENGINE.setProperty('rate', 175)
 
 with open('compliments_formatted.json', 'r', encoding='utf-8') as compliments:
     COMPLIMENTS = json.load(compliments)
@@ -89,13 +91,15 @@ def show_text(frame: _frame, face_box: _face_coords, compliment: List[str]) -> _
     return frame
 
 def stop_and_speak(new_text: List[str]) -> None:
-    ENGINE.say(''.join(new_text))
-    try: ENGINE.runAndWait()
-    except RuntimeError: pass
+    # ENGINE.say(''.join(new_text))
+    # try: ENGINE.runAndWait()
+    # except RuntimeError: pass
+
+    ...
 
 if __name__ == '__main__':
 
-    CAM: cv2.VideoCapture = cv2.VideoCapture(0)
+    CAM: cv2.VideoCapture = cv2.VideoCapture(CAMERA_IP)
     FRAME_WIDTH: int = int(CAM.get(cv2.CAP_PROP_FRAME_WIDTH))
     FRAME_HEIGHT: int = int(CAM.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
@@ -123,9 +127,9 @@ if __name__ == '__main__':
             if emotion_changed:
                 compliment = random.choice(COMPLIMENTS[curr_emotion])
                 
-                thread = Thread(target=stop_and_speak, args=(compliment, ))
-                thread.daemon = True
-                thread.start()
+                # thread = Thread(target=stop_and_speak, args=(compliment, ))
+                # thread.daemon = True
+                # thread.start()
 
                 prev_emotion = curr_emotion
                 prev_emotion_percent = curr_emotion_percent
