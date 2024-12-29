@@ -39,6 +39,10 @@ This was faced because the model is considering the current frame, without takin
 **Get dimensions taken by a word on the camera frame**
 A static method named getTextSize exist in cv2 which gives the size that text takes on screen.
 
+**Show text on TFT LCD Display**
+[Connecting TFT LCD Display to Raspberry Pi](https://youtu.be/SYdGNpfLxKw?si=z28GJWfhNLIu-Haz)
+[Python_ST7735](https://github.com/degzero/Python_ST7735)
+
 
 ## Instructions to run the code
 Clone the Repo (Ensure Python is >=3.10.6)

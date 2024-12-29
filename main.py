@@ -1,9 +1,21 @@
+import Adafruit_GPIO as GPIO
+import Adafruit_GPIO.SPI as SPI
+
 import cv2
 from fer import FER
 import json
 import pyttsx3
+
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
+
 import random
+
+import ST7735 as TFT
+
 from threading import Thread, Lock
+import time
 from typing import List, Dict, Tuple
 
 _face_coords = List[int]
@@ -12,6 +24,16 @@ _face_data = Dict[str, _face_coords|_emotion_dict]
 _frame = cv2.typing.MatLike
 
 CAMERA_IP = 'http://192.168.6.149:4747/video'
+
+WIDTH = 128
+HEIGHT = 160
+SPEED_HZ = 16000000
+
+# Raspberry Pi configuration.
+DC = 24
+RST = 25
+SPI_PORT = 0
+SPI_DEVICE = 0
 
 # ENGINE = pyttsx3.init()
 # ENGINE.setProperty('voice', ENGINE.getProperty('voices')[1].id)
@@ -41,54 +63,14 @@ def analyse_curr_emotion(emotions_metrics: Dict[str, float]) -> Tuple[str|float]
     
     return curr_emotion, curr_emotion_percent
 
+def display_text(DISPLAY: TFT.ST7735, compliment: List[str]) -> Image:
+    img = Image.new('RGB', (WIDTH, HEIGHT), color=(0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 14)
+    draw.rectangle((0, 0, 128, 160), (128, 128, 128))
+    draw.text((0, 0), '\n'.join(compliment), font=font, fill=(255, 255, 255))
 
-def show_text(frame: _frame, face_box: _face_coords, compliment: List[str]) -> _frame:
-    
-    x1, y1 = face_box[:2]
-    x3, y3 = x1 + face_box[2], y1 + face_box[3]
-
-    _, line_height = cv2.getTextSize('H', cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
-    LINE_GAP = line_height
-    WORD_GAP = 5
-    MARGIN = 5
-
-    x, y = 40, 60
-    i = 0
-    while True:
-        if i >= len(compliment): break
-        word: str = compliment[i]
-        word_width, word_height = cv2.getTextSize(word, cv2.FONT_HERSHEY_PLAIN, 2, 2)[0]
-
-        # edge cases: border of camera
-        if not x + word_width < FRAME_WIDTH:
-            # change line
-            x = 20
-            y += line_height + LINE_GAP
-        if not y < FRAME_HEIGHT:
-            # no more lines possible so exit
-            break
-        
-        # edge cases: face box
-        text_horizontal_box: bool = x + word_width < x1 or x > x3
-        text_vertical_box: bool = y + word_height < y1 or y > y3
-        text_outside_box: bool = text_vertical_box or text_horizontal_box
-        if text_outside_box:
-            frame = cv2.putText(
-                img = frame,
-                text = word,
-                org = (x, y+line_height),
-                fontFace = cv2.FONT_HERSHEY_PLAIN,
-                fontScale = 2,
-                color = (0, 255, 0),
-                thickness = 2,
-                lineType = cv2.LINE_AA
-            )
-            i += 1
-            x += word_width + WORD_GAP
-        else:
-            x = x3 + MARGIN
-
-    return frame
+    return img
 
 def stop_and_speak(new_text: List[str]) -> None:
     # ENGINE.say(''.join(new_text))
@@ -102,6 +84,16 @@ if __name__ == '__main__':
     CAM: cv2.VideoCapture = cv2.VideoCapture(CAMERA_IP)
     FRAME_WIDTH: int = int(CAM.get(cv2.CAP_PROP_FRAME_WIDTH))
     FRAME_HEIGHT: int = int(CAM.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    # Create TFT LCD display class.
+    DISPLAY: TFT.ST7735 = TFT.ST7735(
+                        DC,
+                        rst=RST,
+                        spi=SPI.SpiDev(
+                            SPI_PORT,
+                            SPI_DEVICE,
+                            max_speed_hz=SPEED_HZ))
+    DISPLAY.begin()
 
     DETECTOR: FER = FER()
 
@@ -134,7 +126,7 @@ if __name__ == '__main__':
                 prev_emotion = curr_emotion
                 prev_emotion_percent = curr_emotion_percent
             
-            frame = show_text(frame, face_box, compliment)
+            DISPLAY.display(display_text(DISPLAY, compliment))
 
         else:
             frame = cv2.putText(
