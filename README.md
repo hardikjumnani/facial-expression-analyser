@@ -39,6 +39,14 @@ This was faced because the model is considering the current frame, without takin
 **Get dimensions taken by a word on the camera frame**
 A static method named getTextSize exist in cv2 which gives the size that text takes on screen.
 
+**No camera available to connect to Raspberry Pi**
+Use DroidCam Client on mobile to host the video feed on LAN and access it from VLC in Pi.
+
+**Not sufficient storage in SD Card of Raspberry Pi**
+Making a bootable pendrive (64GB).
+[Raspberry Pi TTY](https://medium.com/tech-notes-and-geek-stuff/raspberrypi-5-your-tty-desktop-computer-7e1a05e2515c)
+[Prepare pendrive for Raspberry Pi](https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#2-prepare-the-sd-card)
+
 
 ## Instructions to run the code
 Clone the Repo (Ensure Python is >=3.10.6)
