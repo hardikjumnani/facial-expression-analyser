@@ -12,39 +12,39 @@ You are tasked with building a personalized compliment generator based on facial
 The program captures your camera feed and the library 'fer' is used to detect emotions. The random module then picks a compliment according to the emotion and compliments the user on the video output.
 
 ## Libraries and tools used
-**Libraries**
-OpenCV
-FER Library
-pyttsx3
+**Libraries**  
+OpenCV  
+FER Library  
+pyttsx3  
 
-**Tools**
-[ChatGPT](https://chatgpt.com/share/67592122-6a88-8013-b563-d57f5a1af674)
-StackOverflow
+**Tools**  
+[ChatGPT](https://chatgpt.com/share/67592122-6a88-8013-b563-d57f5a1af674)  
+StackOverflow  
 
 
 ## Challenges faced and how they were addressed
-**ModuleNotFoundError: No module named 'moviepy.editor'**
+**ModuleNotFoundError: No module named 'moviepy.editor'**  
 [reference](https://stackoverflow.com/questions/41923492/cant-import-moviepy-editor)
 Fixed this by installing specific version of moviepy
 
-**Rapid change of compliment random compliments, even without change of emotion**
+**Rapid change of compliment random compliments, even without change of emotion**  
 Fixed this by having a record of previous emotion (prev_emotion) and change compliment only when current emotion (curr_emotion) is not same as the previous one.
 
-**Compliment's length was longer than the width of screen**
+**Compliment's length was longer than the width of screen**  
 Fixed this by splitting the lines of the compliment and putting text one line at a time.
 
-**Rapid change in compliments**
+**Rapid change in compliments**  
 This was faced because the model is considering the current frame, without taking previousframe into account, which is causing rapid changes in guessed emotions. To fix this, I have eased out the switch so that a new compliment is picked, only when there is more than 20% change in the emotion.
 
-**Get dimensions taken by a word on the camera frame**
+**Get dimensions taken by a word on the camera frame**  
 A static method named getTextSize exist in cv2 which gives the size that text takes on screen.
 
-**No camera available to connect to Raspberry Pi**
+**No camera available to connect to Raspberry Pi**  
 Use DroidCam Client on mobile to host the video feed on LAN and access it from VLC in Pi.
 
-**Not sufficient storage in SD Card of Raspberry Pi**
-Making a bootable pendrive (64GB).
-[Raspberry Pi TTY](https://medium.com/tech-notes-and-geek-stuff/raspberrypi-5-your-tty-desktop-computer-7e1a05e2515c)
+**Not sufficient storage in SD Card of Raspberry Pi**  
+Making a bootable pendrive (64GB).  
+[Raspberry Pi TTY](https://medium.com/tech-notes-and-geek-stuff/raspberrypi-5-your-tty-desktop-computer-7e1a05e2515c)  
 [Prepare pendrive for Raspberry Pi](https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#2-prepare-the-sd-card)
 
 
