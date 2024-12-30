@@ -54,38 +54,51 @@ Clone the Repo (Ensure Python is >=3.10.6)
 git clone https://github.com/hardikjumnani/facial-expression-analyser
 ```
 
-Create a virtual environment
+### To run the code on Raspberry Pi
 ```
-# Windows
-python -m venv .venv
+git checkout raspberry-pi
+```
 
-# MacOS/Linux
+### Create a virtual environment
+#### Windows
+```
+python -m venv .venv
+```
+
+#### Raspberry Pi OS
+```
 python3 -m venv .venv
 ```
 
-Activate the virtual environment
+### Activate the virtual environment
+#### Windows
 ```
-# Windows
 source .venv/Scripts/activate
+```
 
-# MacOS/Linux
+#### Raspberry Pi OS
+```
 source .venv/bin/activate
 ```
 
-Install all dependencies
+### Install all dependencies
+#### Windows
 ```
-# Windows
 pip install -r requirements.txt
+```
 
-# MacOS/Linux
+#### Raspberry Pi OS
+```
 pip3 install -r requirements.txt
 ```
 
-Run the program
+### Run the program
+#### Windows
 ```
-# Windows
 python main.py
+```
 
-# MacOS/Linux
-python3 main.py
+#### Raspberry Pi
+```
+python3 main_raspberry_pi.py
 ```
