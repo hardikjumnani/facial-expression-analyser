@@ -1,6 +1,7 @@
 # Technical Challenge: Build a Feature for the Smart Mirror
 
-[For more info](https://docs.google.com/document/d/1V6fS0x77ThQfvjP7TFSBcTVrIYgCKFowFTQO0VWNbeM/edit?tab=t.0#heading=h.vx7skgheux9k)
+[For more info](https://docs.google.com/document/d/1V6fS0x77ThQfvjP7TFSBcTVrIYgCKFowFTQO0VWNbeM/edit?tab=t.0#heading=h.vx7skgheux9k)  
+[Solution Video Link](https://youtube.com/shorts/N-jEn22R7RQ?si=-EHcXkYQ2j1pyF4F)  
 
 ## Problem Statement
 You are tasked with building a personalized compliment generator based on facial analysis. The feature should:
