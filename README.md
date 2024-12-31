@@ -12,6 +12,15 @@ You are tasked with building a personalized compliment generator based on facial
 ## Overview of the Solution
 The program captures your camera feed and the library 'fer' is used to detect emotions. The random module then picks a compliment according to the emotion and compliments the user on the video output.
 
+# Objectives Completed  
+![Compliment shown on camera](./objective_images/Compliment%20shown%20on%20cam.png)
+1. Display a compliment tailored to the detected expression.
+![Compliment not overlapping face](./objective_images/Compliment%20not%20overlapping%20face.png)
+2. Compliment doesn't cover the face.
+3. Compliment is spoken from PC speaker.
+![TFT Display showing compliment](./objective_images/TFT%20Display%20showing%20compliment.jpg)
+4. TFT LCD Display is connected to Raspberry Pi with Jumper Wires and compliment is shown in it.
+
 ## Libraries and tools used
 **Libraries**  
 OpenCV  
